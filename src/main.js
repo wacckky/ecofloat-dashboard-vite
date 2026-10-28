@@ -13,6 +13,8 @@ import { initPanels, hasFix } from './components/panels.js';
 import { initMap } from './components/map.js';
 import { initDetectionLog } from './components/detection-log.js';
 import { initControlPad } from './components/control-pad.js';
+import { initAuth } from './services/auth.js';
+import { initOperatorLock } from './components/operator-lock.js';
 
 const ts = (x) => new Date(x.timestamp).getTime();
 const sortAsc = (a) => (a.every((x) => x.timestamp) ? [...a].sort((x, y) => ts(x) - ts(y)) : [...a].reverse());
@@ -44,7 +46,7 @@ onMessage(WS_MESSAGE.BIN, (d) => setState({ bin: d }));
 onMessage(WS_MESSAGE.DETECTION, addDetection);
 onStatus((s) => { setState({ connection: s }); if (s === 'online') hydrate(); });
 
-mountApp(); initEvents();
+mountApp(); initEvents(); initAuth(); initOperatorLock();
 initStatusBadge(); initPanels(); initMap(); initDetectionLog(); initControlPad();
 initRouter();
 connect();

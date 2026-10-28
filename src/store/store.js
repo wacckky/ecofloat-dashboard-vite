@@ -2,7 +2,7 @@ import { MAX_DETECTIONS, MAX_PATH_POINTS } from '../config/constants.js';
 
 const state = {
   connection: 'connecting', // connecting | online | offline
-  gps: null, system: null, motors: null, bin: null,
+  operator: 'locked', authError: '', gps: null, system: null, motors: null, bin: null,
   path: [], detections: [],
 };
 const listeners = new Set();

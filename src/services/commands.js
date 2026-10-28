@@ -19,10 +19,10 @@ export function setMotor(cmd) {
 export const stopMotors = () => setMotor(MOTOR_CMD.STOP);
 
 // Emergency stop: no confirm() dialog, it must be instant.
-export const emergencyStop = () => { stopMotors(); return send({ command: 'stop' }); };
+export const emergencyStop = () => { stopMotors(); return send({ type: 'command', command: 'stop' }); };
 
 // Return-to-home is not safety critical, so the UI may confirm before calling this.
-export const returnHome = () => send({ command: 'return_home' });
+export const returnHome = () => send({ type: 'command', command: 'return_home' });
 
 // If the tab loses focus, key/mouse "up" events can be missed. Stop the motors.
 export function installSafetyStops() {
