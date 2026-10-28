@@ -1,0 +1,137 @@
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PAGE 2 — DASHBOARD
+══════════════════════════════════════════════════════════════════════════ -->
+<div id="page-dashboard" class="page">
+  <div class="dashboard-layout">
+
+    <!-- Left sidebar -->
+    <div class="dash-left">
+      
+      <div class="panel-card">
+        <div class="panel-title">Bin Status <div class="panel-title-dot"></div></div>
+        <div class="stat-row">
+          <div class="stat-box"><label>Volume Score</label><div class="val" id="dBinScore">--</div></div>
+          <div class="stat-box"><label>Items</label><div class="val" id="dBinItems">--</div></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-box"><label>Occlusion</label><div class="val" id="dBinOcc">--%</div></div>
+          <div class="stat-box"><label>Status</label><div class="val" id="dBinStatus">--</div></div>
+        </div>
+        <label style="font-size:0.62rem;color:var(--text3);font-family:'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase">Fill Level</label>
+        <div class="progress-bar"><div class="progress-fill" id="binBar" style="width:0%"></div></div>
+      </div>
+      
+      <div class="panel-card">
+        <div class="panel-title">GPS Position <div class="panel-title-dot"></div></div>
+        <div class="stat-row">
+          <div class="stat-box"><label>Latitude</label><div class="val" id="dLat">--</div></div>
+          <div class="stat-box"><label>Longitude</label><div class="val" id="dLon">--</div></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-box"><label>Heading</label><div class="val" id="dHeading">--°</div></div>
+          <div class="stat-box"><label>Speed</label><div class="val" id="dSpeed">-- m/s</div></div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">System Health <div class="panel-title-dot"></div></div>
+        <div class="stat-row">
+          <div class="stat-box"><label>Battery</label><div class="val" id="dBattery">-- V</div></div>
+          <div class="stat-box"><label>Status</label><div class="val" id="dStatus">--</div></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-box"><label>CPU</label><div class="val" id="dCpu">--%</div></div>
+          <div class="stat-box"><label>Memory</label><div class="val" id="dMem">--%</div></div>
+        </div>
+        <label style="font-size:0.62rem;color:var(--text3);font-family:'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase">CPU Load</label>
+        <div class="progress-bar"><div class="progress-fill" id="cpuBar" style="width:0%"></div></div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">Motor Status <div class="panel-title-dot"></div></div>
+        <div class="stat-row">
+          <div class="stat-box"><label>Left Motor</label><div class="val" id="dMotorL">-- µs</div></div>
+          <div class="stat-box"><label>Right Motor</label><div class="val" id="dMotorR">-- µs</div></div>
+        </div>
+        <div class="stat-box" style="margin-top:8px">
+          <label>ESC Status</label>
+          <div class="val" id="dEsc">--</div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">Motor Control <div class="panel-title-dot"></div></div>
+
+        <!-- D-Pad Controller -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;margin-bottom:12px">
+
+          <!-- Row 1: empty, forward, empty -->
+          <div></div>
+          <button class="motor-btn"
+            id="btn-F"
+            data-motor="F">
+            ▲<br><span>FORWARD</span>
+          </button>
+          <div></div>
+
+          <!-- Row 2: left, stop, right -->
+          <button class="motor-btn"
+            id="btn-L"
+            data-motor="L">
+            ◄<br><span>LEFT</span>
+          </button>
+          <button class="motor-btn motor-stop"
+            id="btn-S"
+            data-motor="S">
+            ■<br><span>STOP</span>
+          </button>
+          <button class="motor-btn"
+            id="btn-R"
+            data-motor="R">
+            ►<br><span>RIGHT</span>
+          </button>
+
+          <!-- Row 3: empty, backward, empty -->
+          <div></div>
+          <button class="motor-btn"
+            id="btn-B"
+            data-motor="B">
+            ▼<br><span>BACK</span>
+          </button>
+          <div></div>
+
+        </div>
+
+        <!-- Status -->
+        <div style="background:var(--bg2);border-radius:6px;padding:8px;text-align:center;border:1px solid var(--border)">
+          <span style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--text3)">MOTOR CMD:</span>
+          <span style="font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--teal);margin-left:8px" id="motorCmdStatus">IDLE</span>
+        </div>
+
+        <div style="margin-top:10px">
+          <button class="cmd-btn cmd-home" data-command="return_home" style="margin-bottom:6px">🏠 Return to Home</button>
+          <button class="cmd-btn cmd-stop" data-command="stop">🛑 Emergency Stop</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center map -->
+    <div class="dash-center">
+      <div id="map"></div>
+      <div class="map-overlay" id="mapOverlay">NO SIGNAL</div>
+    </div>
+
+    <!-- Right sidebar -->
+    <div class="dash-right">
+
+      <div class="panel-card">
+        <div class="panel-title">Live Detections <div class="panel-title-dot"></div></div>
+        <div id="detectionLog">
+          <div class="empty-state">// awaiting data</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

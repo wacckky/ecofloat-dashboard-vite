@@ -1,0 +1,99 @@
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PAGE 1 — LANDING
+══════════════════════════════════════════════════════════════════════════ -->
+<div id="page-landing" class="page active">
+
+  <section class="hero">
+    <div class="hero-tag">🌊 Capstone Project 2026</div>
+    <h1>Cleaning Rivers with<br><span class="accent">Autonomous AI</span></h1>
+    <p>EcoFloat is an AI-powered floating drone that detects and collects trash from rivers using YOLOv8 vision, GPS navigation, and real-time IoT telemetry.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" data-page="dashboard">Open Dashboard</button>
+      <button class="btn-secondary" data-page="analytics">View Analytics</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="num" id="statTotal">--</span>
+        <span class="lbl">Trash Detected</span>
+      </div>
+      <div class="hero-stat">
+        <span class="num" id="statDist">--</span>
+        <span class="lbl">Distance (m)</span>
+      </div>
+      <div class="hero-stat">
+        <span class="num" id="statUptime">--</span>
+        <span class="lbl">System Status</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="section-label">What EcoFloat Does</div>
+    <div class="section-title">Integrated System for<br>River Pollution Control</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🤖</span>
+        <h3>AI Trash Detection</h3>
+        <p>YOLOv8 model running on Raspberry Pi detects floating litter and obstacles in real time at 6–10 fps using NCNN optimization.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🛰️</span>
+        <h3>GPS Navigation</h3>
+        <p>NEO-M8N GPS module tracks the drone's exact position on the river and logs the path for analysis on the live map.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📡</span>
+        <h3>4G LTE Telemetry</h3>
+        <p>Huawei E3372 LTE modem sends real-time data via MQTT over 4G, so the drone can be monitored from anywhere.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🗺️</span>
+        <h3>Live Web Dashboard</h3>
+        <p>Track the drone's position, motor status, battery, and all detection events on an interactive map dashboard.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⚙️</span>
+        <h3>ESP32 Motor Control</h3>
+        <p>ESP32 handles low-level brushless motor PWM control with Hobbywing SeaKing ESCs for precise water navigation.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📊</span>
+        <h3>Analytics & Logging</h3>
+        <p>All detection events, GPS paths, and telemetry are stored in MongoDB Atlas for historical analysis and reporting.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tech-section">
+    <div class="tech-inner">
+      <div class="section-label">Technology Stack</div>
+      <div class="section-title" style="font-size:1.6rem">Built With</div>
+      <div class="tech-grid">
+        <span class="tech-pill">Raspberry Pi 5</span>
+        <span class="tech-pill">ESP32</span>
+        <span class="tech-pill">YOLOv8 + NCNN</span>
+        <span class="tech-pill">picamera2</span>
+        <span class="tech-pill">NEO-M8N GPS</span>
+        <span class="tech-pill">MPU9250 IMU</span>
+        <span class="tech-pill">JSN-SR04M-2 Ultrasonic ×2</span>
+        <span class="tech-pill">HMC5883L Compass</span>
+        <span class="tech-pill">Hobbywing SeaKing 30A</span>
+        <span class="tech-pill">Huawei E3372 LTE</span>
+        <span class="tech-pill">MQTT / HiveMQ</span>
+        <span class="tech-pill">FastAPI</span>
+        <span class="tech-pill">MongoDB Atlas</span>
+        <span class="tech-pill">Cloudinary</span>
+        <span class="tech-pill">Leaflet.js</span>
+        <span class="tech-pill">Render</span>
+        <span class="tech-pill">Vercel</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Monitor EcoFloat Live</h2>
+    <p>Open the dashboard to see real-time GPS tracking, telemetry, and detection events.</p>
+    <button class="btn-primary" data-page="dashboard">Open Live Dashboard →</button>
+  </section>
+
+</div>

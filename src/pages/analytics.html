@@ -1,0 +1,86 @@
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PAGE 3 — ANALYTICS
+══════════════════════════════════════════════════════════════════════════ -->
+<div id="page-analytics" class="page">
+  <div class="analytics-inner">
+
+    <div class="analytics-header">
+      <div>
+        <div class="section-label">EcoFloat Analytics</div>
+        <h1>River Cleaning Report</h1>
+      </div>
+      <div class="time-range">
+        <button class="range-btn active" data-range="today">Today</button>
+        <button class="range-btn" data-range="7days">7 Days</button>
+        <button class="range-btn" data-range="30days">30 Days</button>
+      </div>
+    </div>
+
+    <!-- Stats cards -->
+    <div class="stats-row">
+      <div class="stats-card">
+        <span class="card-icon">🗑️</span>
+        <div class="card-label">Total Trash Detected</div>
+        <div class="card-value" id="aTotal">0</div>
+        <div class="card-unit">detection events</div>
+        <div class="card-delta delta-up" id="aTotalDelta">↑ loading...</div>
+      </div>
+      <div class="stats-card">
+        <span class="card-icon">📍</span>
+        <div class="card-label">Distance Covered</div>
+        <div class="card-value" id="aDist">0</div>
+        <div class="card-unit">metres traveled</div>
+        <div class="card-delta delta-up" id="aDistDelta">↑ loading...</div>
+      </div>
+      <div class="stats-card">
+        <span class="card-icon">🔄</span>
+        <div class="card-label">Cleaning Cycles</div>
+        <div class="card-value" id="aCycles">0</div>
+        <div class="card-unit">completed runs</div>
+        <div class="card-delta delta-up" id="aCyclesDelta">↑ loading...</div>
+      </div>
+    </div>
+
+    <!-- Heatmap + Bar chart -->
+    <div class="analytics-grid">
+      <div class="analytics-card">
+        <h3>Trash Detection Heatmap</h3>
+        <div id="heatmap"></div>
+      </div>
+      <div class="analytics-card">
+        <h3>Detections Per Hour</h3>
+        <div class="bar-chart" id="barChart"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px">
+          <span style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--text3)">12AM</span>
+          <span style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--text3)">6AM</span>
+          <span style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--text3)">12PM</span>
+          <span style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--text3)">6PM</span>
+          <span style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--text3)">NOW</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detection log table -->
+    <div class="analytics-card">
+      <h3>Detection Event Log</h3>
+      <div style="overflow-x:auto">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Type</th>
+              <th>Confidence</th>
+              <th>Latitude</th>
+              <th>Longitude</th>
+              <th>Image</th>
+            </tr>
+          </thead>
+          <tbody id="logTableBody">
+            <tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px;font-family:'Space Mono',monospace">// no detection logs yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

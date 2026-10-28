@@ -1,17 +1,18 @@
 import 'leaflet/dist/leaflet.css';
-import './styles/legacy.css';
+import './styles/main.css';
 
 import { connect, onMessage, onStatus } from './services/websocket.js';
 import { loadInitialData } from './services/api.js';
 import { WS_MESSAGE, MAX_DETECTIONS } from './config/constants.js';
 import { setState, addPathPoint, addDetection } from './store/store.js';
-import { showPage, initRouter } from './pages/router.js';
-import { setRange } from './pages/analytics.js';
+import { initRouter } from './pages/router.js';
+import { mountApp } from './app/mount.js';
+import { initEvents } from './app/events.js';
 import { initStatusBadge } from './components/status-badge.js';
 import { initPanels, hasFix } from './components/panels.js';
 import { initMap } from './components/map.js';
 import { initDetectionLog } from './components/detection-log.js';
-import { initControlPad, press, sendCommand } from './components/control-pad.js';
+import { initControlPad } from './components/control-pad.js';
 
 const ts = (x) => new Date(x.timestamp).getTime();
 const sortAsc = (a) => (a.every((x) => x.timestamp) ? [...a].sort((x, y) => ts(x) - ts(y)) : [...a].reverse());
@@ -43,10 +44,7 @@ onMessage(WS_MESSAGE.BIN, (d) => setState({ bin: d }));
 onMessage(WS_MESSAGE.DETECTION, addDetection);
 onStatus((s) => { setState({ connection: s }); if (s === 'online') hydrate(); });
 
-// Temporary bridge so the old inline onclick="..." attributes keep working.
-// Removed in the next step when the markup becomes real components.
-Object.assign(window, { showPage, startMotor: press, sendCommand, setRange });
-
+mountApp(); initEvents();
 initStatusBadge(); initPanels(); initMap(); initDetectionLog(); initControlPad();
 initRouter();
 connect();
