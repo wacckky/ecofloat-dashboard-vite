@@ -12,8 +12,25 @@ const icon = (emoji, size) => L.divIcon({
   iconSize: [size + 4, size + 4], className: '',
 });
 
+// Boat marker: an SVG arrow that rotates with the calibrated compass heading (map stays north-up)
+const ARROW = '<div class="drone-arrow no-heading"><svg viewBox="0 0 36 36"><path d="M18 3 L29 31 L18 25 L7 31 Z" fill="#00c8b4" stroke="#020b12" stroke-width="2" stroke-linejoin="round"/></svg></div>';
+const droneIcon = L.divIcon({ html: ARROW, iconSize: [36, 36], iconAnchor: [18, 18], className: '' });
+let rotation = 0;
+
+function setHeading(g) {
+  const el = drone?.getElement()?.firstElementChild;
+  if (!el) return;
+  const h = Number(g?.heading);
+  const valid = g && g.heading != null && g.heading_valid !== false && Number.isFinite(h);
+  el.classList.toggle('no-heading', !valid);   // grey arrow = heading unavailable
+  if (!valid) return;
+  rotation += ((h - rotation) % 360 + 540) % 360 - 180;   // shortest turn: no spin at 359 -> 1
+  el.style.transform = `rotate(${rotation}deg)`;
+}
+
 function render(s, keys) {
   if (!map) return;
+  if (keys.includes('gps')) setHeading(s.gps);
   if (keys.includes('gps') && hasFix(s.gps)) {
     const pos = [Number(s.gps.latitude), Number(s.gps.longitude)];
     drone.setLatLng(pos);
@@ -36,7 +53,7 @@ export function ensureMap() {
   if (map) { map.invalidateSize(); return; }
   map = L.map('map').setView(MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
-  drone = L.marker(MAP_DEFAULT_CENTER, { icon: icon('🚤', 30) }).addTo(map).bindPopup('<b>EcoFloat 01</b>');
+  drone = L.marker(MAP_DEFAULT_CENTER, { icon: droneIcon }).addTo(map).bindPopup('<b>EcoFloat 01</b>');
   line = L.polyline([], { color: '#00c8b4', weight: 2, opacity: 0.7, dashArray: '6,4' }).addTo(map);
   render(getState(), ['gps', 'path', 'detections']);
 }

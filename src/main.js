@@ -1,10 +1,13 @@
 import 'leaflet/dist/leaflet.css';
 import './styles/main.css';
+import './styles/ecofloat.css';
 
 import { connect, onMessage, onStatus } from './services/websocket.js';
 import { loadInitialData } from './services/api.js';
 import { WS_MESSAGE, MAX_DETECTIONS } from './config/constants.js';
-import { setState, addPathPoint, addDetection } from './store/store.js';
+import { setState, getState, addPathPoint, addDetection } from './store/store.js';
+import { initDevice, seenFromRecord } from './services/device.js';
+import { mountEcofloatPage } from './pages/ecofloat.js';
 import { initRouter } from './pages/router.js';
 import { mountApp } from './app/mount.js';
 import { initEvents } from './app/events.js';
@@ -32,6 +35,10 @@ async function hydrate() {
   if (d.system?.status) patch.system = d.system;
   if (d.motors?.esc_status) patch.motors = d.motors;
   if (d.bin?.status) patch.bin = d.bin;
+  const lastGps = Array.isArray(d.gps) && d.gps.length ? sortAsc(d.gps).at(-1) : null;
+  const seen = Math.max(0, ...[lastGps, d.system].map(seenFromRecord).filter(Boolean));
+  if (seen > (getState().lastSeen || 0)) patch.lastSeen = seen;
+  if (d.system?.fsm_state && !getState().fsmState) patch.fsmState = d.system.fsm_state;
   setState(patch);
 }
 
@@ -40,13 +47,14 @@ onMessage(WS_MESSAGE.GPS, (d) => {
   setState({ gps: d });
   if (hasFix(d)) addPathPoint([Number(d.latitude), Number(d.longitude)]);
 });
-onMessage(WS_MESSAGE.SYSTEM, (d) => setState({ system: d }));
+onMessage(WS_MESSAGE.SYSTEM, (d) => setState({ system: d, fsmState: d?.fsm_state || getState().fsmState }));
+onMessage(WS_MESSAGE.FSM, (d) => setState({ fsmState: d?.to || '' }));
 onMessage(WS_MESSAGE.MOTORS, (d) => setState({ motors: d }));
 onMessage(WS_MESSAGE.BIN, (d) => setState({ bin: d }));
 onMessage(WS_MESSAGE.DETECTION, addDetection);
 onStatus((s) => { setState({ connection: s }); if (s === 'online') hydrate(); });
 
-mountApp(); initEvents(); initAuth(); initOperatorLock();
+mountApp(); mountEcofloatPage(); initEvents(); initDevice(); initAuth(); initOperatorLock();
 initStatusBadge(); initPanels(); initMap(); initDetectionLog(); initControlPad();
 initRouter();
 connect();

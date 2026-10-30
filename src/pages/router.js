@@ -1,7 +1,7 @@
 import { ensureMap } from '../components/map.js';
 import { initAnalytics } from './analytics.js';
 
-const PAGES = ['landing', 'dashboard', 'analytics'];
+const PAGES = ['landing', 'ecofloat', 'dashboard', 'analytics'];
 let current = 'landing';
 
 export const getCurrentPage = () => current;

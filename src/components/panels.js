@@ -7,7 +7,7 @@ export const hasFix = (g) => g && Number(g.latitude) !== 0 && Number(g.longitude
 
 function renderGps({ gps: g }) {
   if (!g) return;
-  set('dHeading', `${Number(g.heading || 0).toFixed(1)}°`);
+  set('dHeading', g.heading == null || g.heading_valid === false ? '--°' : `${Number(g.heading).toFixed(1)}°`);
   set('dSpeed', `${Number(g.speed || 0).toFixed(2)} m/s`);
   if (hasFix(g)) {
     set('dLat', fmtCoord(g.latitude));
