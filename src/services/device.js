@@ -6,7 +6,7 @@ import { WS_MESSAGE as W, DEVICE_STALE_MS } from '../config/constants.js';
 function markSeen(d) {
   setState({
     lastSeen: Date.now(), lastWillOffline: false, simulated: !!d?.simulated,
-    deviceId: d?.device_id ?? getState().deviceId,
+    deviceId: d?.device_id ?? d?.drone_id ?? getState().deviceId,
   });
 }
 

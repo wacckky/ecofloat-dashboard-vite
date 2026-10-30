@@ -1,13 +1,15 @@
 import { ensureMap } from '../components/map.js';
 import { initAnalytics } from './analytics.js';
+import { ensureManualMap, leaveManual } from './manual.js';
 
-const PAGES = ['landing', 'ecofloat', 'dashboard', 'analytics'];
+const PAGES = ['landing', 'ecofloat', 'manual', 'dashboard', 'analytics'];
 let current = 'landing';
 
 export const getCurrentPage = () => current;
 
 export function showPage(name) {
   if (!PAGES.includes(name)) name = 'landing';
+  if (current === 'manual' && name !== 'manual') leaveManual();   // never leave the motors running
   document.querySelectorAll('.page').forEach((p) => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach((b) => b.classList.remove('active'));
   document.getElementById(`page-${name}`)?.classList.add('active');
@@ -15,6 +17,7 @@ export function showPage(name) {
   current = name;
   history.replaceState(null, '', `#${name}`);
   if (name === 'dashboard') ensureMap();
+  if (name === 'manual') ensureManualMap();
   if (name === 'analytics') initAnalytics();
 }
 

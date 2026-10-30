@@ -2,7 +2,7 @@ import { MAX_DETECTIONS, MAX_PATH_POINTS } from '../config/constants.js';
 
 const state = {
   connection: 'connecting', // connecting | online | offline
-  operator: 'locked', authError: '', deviceStatus: 'unknown', lastSeen: null, lastWillOffline: false,
+  operator: 'locked', authError: '', heartbeat: { status: 'idle' }, deviceStatus: 'unknown', lastSeen: null, lastWillOffline: false,
   simulated: false, deviceId: '', fsmState: '', gps: null, system: null, motors: null, bin: null,
   path: [], detections: [],
 };

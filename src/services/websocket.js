@@ -3,6 +3,7 @@ import { WS_RECONNECT } from '../config/constants.js';
 
 let socket = null;
 let attempts = 0;
+let timer = null;
 const handlers = new Map(); // message type -> Set<fn>
 const statusListeners = new Set();
 
@@ -29,7 +30,7 @@ export function connect() {
     emitStatus('offline');
     // Exponential backoff with jitter: 1s, 2s, 4s ... capped at 30s
     const delay = Math.min(WS_RECONNECT.baseMs * 2 ** attempts++, WS_RECONNECT.maxMs);
-    setTimeout(connect, delay + Math.random() * 500);
+    timer = setTimeout(connect, delay + Math.random() * 500);
   };
 
   socket.onerror = () => socket.close();
@@ -41,4 +42,12 @@ export function send(payload) {
   if (!isOpen()) return false;
   socket.send(JSON.stringify(payload));
   return true;
+}
+
+// "Connect to EcoFloat" button: skip the retry wait and reconnect now (only if there is no session)
+export function reconnectNow() {
+  if (socket && socket.readyState !== WebSocket.CLOSED) return;
+  clearTimeout(timer);
+  attempts = 0;
+  connect();
 }
