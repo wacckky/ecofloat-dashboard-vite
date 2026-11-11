@@ -5,6 +5,7 @@ const state = {
   operator: 'locked', authError: '', heartbeat: { status: 'idle' }, deviceStatus: 'unknown', lastSeen: null, lastWillOffline: false,
   simulated: false, deviceId: '', fsmState: '', gps: null, system: null, motors: null, bin: null,
   path: [], detections: [],
+  mission: null, missionPlanAck: null, missionResult: null,   // mission planner (telemetry/mission, mission_plan, backend reply)
 };
 const listeners = new Set();
 

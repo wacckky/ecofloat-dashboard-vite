@@ -3,7 +3,16 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "scripts": { "dev": "vite", "build": "vite build", "preview": "vite preview" },
-  "dependencies": { "leaflet": "1.9.4" },
-  "devDependencies": { "vite": "^5.4.0" }
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "esbuild tests/mission-checks.test.js --bundle --platform=node --format=esm --define:import.meta.env={} --outfile=.test-build/t.mjs --log-level=warning && node .test-build/t.mjs"
+  },
+  "dependencies": {
+    "leaflet": "1.9.4"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
 }
