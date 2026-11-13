@@ -2,6 +2,7 @@ import 'leaflet/dist/leaflet.css';
 import './styles/main.css';
 import './styles/ecofloat.css';
 import './styles/manual.css';
+import './styles/mission.css';
 
 import { connect, onMessage, onStatus } from './services/websocket.js';
 import { loadInitialData } from './services/api.js';
@@ -10,6 +11,7 @@ import { setState, getState, addPathPoint, addDetection } from './store/store.js
 import { initDevice, seenFromRecord } from './services/device.js';
 import { mountEcofloatPage } from './pages/ecofloat.js';
 import { mountManualPage } from './pages/manual.js';
+import { mountMissionPage } from './pages/mission.js';
 import { initHeartbeat } from './services/heartbeat.js';
 import { initRouter } from './pages/router.js';
 import { mountApp } from './app/mount.js';
@@ -55,9 +57,12 @@ onMessage(WS_MESSAGE.FSM, (d) => setState({ fsmState: d?.to || '' }));
 onMessage(WS_MESSAGE.MOTORS, (d) => setState({ motors: d }));
 onMessage(WS_MESSAGE.BIN, (d) => setState({ bin: d }));
 onMessage(WS_MESSAGE.DETECTION, addDetection);
+onMessage(WS_MESSAGE.MISSION, (d) => setState({ mission: d, fsmState: d?.state || getState().fsmState }));
+onMessage(WS_MESSAGE.MISSION_PLAN, (d) => setState({ missionPlanAck: d }));
+onMessage(WS_MESSAGE.MISSION_RESULT, (d) => setState({ missionResult: d }));
 onStatus((s) => { setState({ connection: s }); if (s === 'online') hydrate(); });
 
-mountApp(); mountEcofloatPage(); mountManualPage(); initEvents(); initDevice(); initHeartbeat(); initAuth(); initOperatorLock();
+mountApp(); mountEcofloatPage(); mountManualPage(); mountMissionPage(); initEvents(); initDevice(); initHeartbeat(); initAuth(); initOperatorLock();
 initStatusBadge(); initPanels(); initMap(); initDetectionLog(); initControlPad();
 initRouter();
 connect();

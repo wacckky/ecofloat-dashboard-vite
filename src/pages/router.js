@@ -1,8 +1,9 @@
 import { ensureMap } from '../components/map.js';
 import { initAnalytics } from './analytics.js';
 import { ensureManualMap, leaveManual } from './manual.js';
+import { ensureMissionMap } from './mission.js';
 
-const PAGES = ['landing', 'ecofloat', 'manual', 'dashboard', 'analytics'];
+const PAGES = ['landing', 'ecofloat', 'manual', 'mission', 'dashboard', 'analytics'];
 let current = 'landing';
 
 export const getCurrentPage = () => current;
@@ -18,6 +19,7 @@ export function showPage(name) {
   history.replaceState(null, '', `#${name}`);
   if (name === 'dashboard') ensureMap();
   if (name === 'manual') ensureManualMap();
+  if (name === 'mission') ensureMissionMap();   // leaving this page never stops a running mission
   if (name === 'analytics') initAnalytics();
 }
 
