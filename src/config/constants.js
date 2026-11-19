@@ -41,7 +41,8 @@ export const MISSION_STATE = {
   MANUAL: { label: 'Manual control', tone: 'good' },
   FAULT: { label: 'Fault', tone: 'bad' },
   RETURN_HOME: { label: 'Returning home', tone: 'warn' },
-  DONE: { label: 'Mission complete', tone: 'neutral' },
+  DONE: { label: 'Finished', tone: 'neutral' },   // used by missions and heading hold
+  HEADING_HOLD: { label: 'Heading hold', tone: 'good' },
 };
 
 export const TEMP_WARN_C = 70;   // Raspberry Pi 5 starts throttling around 80 C
@@ -74,4 +75,11 @@ export const TILES = {
     attribution: '© OpenStreetMap contributors',
     maxNativeZoom: 19,
   },
+};
+
+// L1 heading hold panel. Keep in sync with app/config.py on the Pi (HEADING_HOLD_*).
+export const HEADING_HOLD = {
+  stepDeg: 10, bandDeg: 15,
+  speedMin: 20, speedMax: 60, speedDefault: 35,
+  durations: [30, 60, 90], durationDefault: 60,
 };

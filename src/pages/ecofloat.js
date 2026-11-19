@@ -68,12 +68,18 @@ function render(s) {
   // Battery + core temperature
   const sys = s.system;
   if (sys) {
-    const pct = sys.battery_percent, v = Number(sys.battery_voltage);
-    set('ecoBat', pct != null ? `${Math.round(pct)}%` : `${v.toFixed(1)} V`);
-    const lowBat = pct != null ? (pct <= BATTERY_DANGER_PCT ? 'danger' : pct <= BATTERY_WARN_PCT ? 'warn' : '')
-      : (v < BATTERY_DANGER_V ? 'danger' : v < BATTERY_WARN_V ? 'warn' : '');
-    cls('ecoBat', lowBat);
-    set('ecoBatNote', pct != null ? `${v.toFixed(2)} V (percent is an estimate)` : 'voltage only');
+    const pct = sys.battery_percent, measured = sys.battery_voltage != null, v = Number(sys.battery_voltage);
+    if (!measured && pct == null) {           // no battery sensor yet: never show a fake 0.0 V alarm
+      set('ecoBat', 'not measured');
+      cls('ecoBat', '');
+      set('ecoBatNote', 'no battery sensor fitted');
+    } else {
+      set('ecoBat', pct != null ? `${Math.round(pct)}%` : `${v.toFixed(1)} V`);
+      const lowBat = pct != null ? (pct <= BATTERY_DANGER_PCT ? 'danger' : pct <= BATTERY_WARN_PCT ? 'warn' : '')
+        : (v < BATTERY_DANGER_V ? 'danger' : v < BATTERY_WARN_V ? 'warn' : '');
+      cls('ecoBat', lowBat);
+      set('ecoBatNote', pct != null && measured ? `${v.toFixed(2)} V (percent is an estimate)` : 'voltage only');
+    }
     const t = Number(sys.cpu_temp_c);
     set('ecoTemp', Number.isFinite(t) ? `${t.toFixed(0)} °C` : '--');
     cls('ecoTemp', t >= TEMP_DANGER_C ? 'danger' : t >= TEMP_WARN_C ? 'warn' : '');

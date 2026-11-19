@@ -8,6 +8,7 @@ import { setThrusters, stopThrusters } from '../services/thrusters.js';
 import { mixJoystick } from '../utils/drive-math.js';
 import { createLiveMap } from '../components/live-map.js';
 import { mountOperatorLock } from '../components/operator-lock.js';
+import { mountHeadingHold } from '../components/heading-hold.js';
 import { MISSION_STATE, MOTOR_CMD } from '../config/constants.js';
 
 const PAGE = `
@@ -57,6 +58,7 @@ const PAGE = `
       <button class="cmd-btn cmd-stop" id="mcEstop" style="margin-top:12px">🛑 Emergency Stop</button>
       <div class="mc-hint" id="mcHint"></div>
     </div>
+    <div id="mcHoldSlot"></div>
   </div>
   <div class="mc-map-col">
     <div id="manualMap"></div>
@@ -222,7 +224,8 @@ function render(s) {
   const m = MISSION_STATE[s.fsmState];
   set('mcState', m ? m.label : '--');
   const g = s.gps, sys = s.system, mot = s.motors;
-  set('mcBat', sys ? (sys.battery_percent != null ? `${Math.round(sys.battery_percent)}%` : `${Number(sys.battery_voltage).toFixed(1)} V`) : '--');
+  set('mcBat', sys?.battery_percent != null ? `${Math.round(sys.battery_percent)}%`
+    : sys?.battery_voltage != null ? `${Number(sys.battery_voltage).toFixed(1)} V` : 'not measured');
   set('mcHead', g && g.heading != null && g.heading_valid !== false ? `${Number(g.heading).toFixed(0)}°` : '--');
   set('mcSpeed', g ? `${Number(g.speed || 0).toFixed(1)} m/s` : '--');
   set('mcMotors', mot ? `${mot.motor_left_throttle} / ${mot.motor_right_throttle}` : '--');
@@ -233,6 +236,7 @@ export function mountManualPage() {
     '<button class="nav-btn" id="nav-manual" data-page="manual">Manual</button>');
   document.getElementById('app').insertAdjacentHTML('beforeend', PAGE);
   mountOperatorLock($('mcOpSlot'), 'append');
+  mountHeadingHold($('mcHoldSlot'));
   manualMap.init();
   wire();
   subscribe(render);
