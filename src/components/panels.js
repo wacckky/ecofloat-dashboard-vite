@@ -21,11 +21,16 @@ function renderGps({ gps: g }) {
 function renderSystem({ system: d }) {
   if (!d) return;
   const cpu = Number(d.cpu_percent || 0);
-  const bat = Number(d.battery_voltage || 0);
   const batEl = $('dBattery');
   if (batEl) {
-    batEl.textContent = `${bat.toFixed(1)} V`;
-    batEl.className = 'val' + (bat < BATTERY_DANGER_V ? ' danger' : bat < BATTERY_WARN_V ? ' warn' : '');
+    if (d.battery_voltage == null) {          // no battery sensor yet: never show a fake 0.0 V alarm
+      batEl.textContent = 'not measured';
+      batEl.className = 'val';
+    } else {
+      const bat = Number(d.battery_voltage);
+      batEl.textContent = `${bat.toFixed(1)} V`;
+      batEl.className = 'val' + (bat < BATTERY_DANGER_V ? ' danger' : bat < BATTERY_WARN_V ? ' warn' : '');
+    }
   }
   set('dCpu', `${cpu.toFixed(0)}%`);
   set('dMem', `${Number(d.memory_percent || 0).toFixed(0)}%`);
