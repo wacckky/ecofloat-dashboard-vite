@@ -25,6 +25,8 @@ export const emergencyStop = () => { stopAll(); return send({ type: 'command', c
 
 // Return-to-home is not safety critical, so the UI may confirm before calling this.
 export const returnHome = () => send({ type: 'command', command: 'return_home' });
+// Bin emptied: the boat's counter starts again at zero (operator only).
+export const binReset = () => send({ type: 'command', command: 'bin_reset' });
 
 // If the tab loses focus, key/mouse "up" events can be missed. Stop the motors.
 export function installSafetyStops() {
