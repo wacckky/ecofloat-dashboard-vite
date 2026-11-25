@@ -52,3 +52,4 @@
 .hh-row input[type=range] { flex: 1; accent-color: var(--teal); }
 .hh-select { width: auto; margin: 0; }
 #hhCard.hh-locked button { opacity: 0.45; }
+.eco-bin-reset { margin-top: 10px; width: 100%; font-size: 0.7rem; }

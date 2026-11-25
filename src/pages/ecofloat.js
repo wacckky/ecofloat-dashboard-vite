@@ -1,9 +1,11 @@
 import { subscribe, getState } from '../store/store.js';
 import { $, set } from '../utils/dom.js';
 import { escapeHtml } from '../utils/format.js';
+import { isOperator } from '../services/auth.js';
+import { binReset } from '../services/commands.js';
 import {
   MISSION_STATE, BIN_STATUS_COLOR, TEMP_WARN_C, TEMP_DANGER_C,
-  BATTERY_WARN_PCT, BATTERY_DANGER_PCT, BATTERY_WARN_V, BATTERY_DANGER_V,
+  batteryView,
 } from '../config/constants.js';
 
 const PAGE = `
@@ -35,6 +37,7 @@ const PAGE = `
         <div class="eco-big" id="ecoBinPct">--</div>
         <div class="progress-bar"><div class="progress-fill" id="ecoBinBar" style="width:0%"></div></div>
         <div class="eco-sub" id="ecoBinNote" style="margin-top:8px">&nbsp;</div>
+        <button class="cmd-btn cmd-home eco-bin-reset" id="ecoBinReset" title="Operator only: press after emptying the bin">Bin emptied → reset count</button>
       </div>
     </div>
   </div>
@@ -68,17 +71,15 @@ function render(s) {
   // Battery + core temperature
   const sys = s.system;
   if (sys) {
-    const pct = sys.battery_percent, measured = sys.battery_voltage != null, v = Number(sys.battery_voltage);
-    if (!measured && pct == null) {           // no battery sensor yet: never show a fake 0.0 V alarm
+    const bv = batteryView(sys);              // voltage + level from the boat; no percent (see paper)
+    if (!bv) {                                // sensor missing or switch off: never show a fake 0.0 V alarm
       set('ecoBat', 'not measured');
       cls('ecoBat', '');
-      set('ecoBatNote', 'no battery sensor fitted');
+      set('ecoBatNote', 'battery sensor not reporting');
     } else {
-      set('ecoBat', pct != null ? `${Math.round(pct)}%` : `${v.toFixed(1)} V`);
-      const lowBat = pct != null ? (pct <= BATTERY_DANGER_PCT ? 'danger' : pct <= BATTERY_WARN_PCT ? 'warn' : '')
-        : (v < BATTERY_DANGER_V ? 'danger' : v < BATTERY_WARN_V ? 'warn' : '');
-      cls('ecoBat', lowBat);
-      set('ecoBatNote', pct != null && measured ? `${v.toFixed(2)} V (percent is an estimate)` : 'voltage only');
+      set('ecoBat', bv.text);
+      cls('ecoBat', bv.tone);
+      set('ecoBatNote', bv.note);
     }
     const t = Number(sys.cpu_temp_c);
     set('ecoTemp', Number.isFinite(t) ? `${t.toFixed(0)} °C` : '--');
@@ -93,8 +94,11 @@ function render(s) {
     set('ecoBinPct', `${fill.toFixed(0)}%`);
     const bar = $('ecoBinBar');
     if (bar) { bar.style.width = `${fill}%`; bar.style.background = color; }
-    set('ecoBinNote', `${String(b.status || '').replace(/_/g, ' ')} · ${b.items_collected || 0} items`);
+    set('ecoBinNote', `${String(b.status || '').replace(/_/g, ' ')} · ${b.items_collected || 0} items`
+      + (b.estimated ? ' · estimated from items counted' : ''));
   }
+  const rb = $('ecoBinReset');
+  if (rb) rb.disabled = !isOperator() || s.connection !== 'online';
 }
 
 // Adds the page and its nav button; the app shell must already be mounted.
@@ -102,6 +106,9 @@ export function mountEcofloatPage() {
   document.getElementById('nav-landing')?.insertAdjacentHTML('afterend',
     '<button class="nav-btn" id="nav-ecofloat" data-page="ecofloat">EcoFloat</button>');
   document.getElementById('app').insertAdjacentHTML('beforeend', PAGE);
+  $('ecoBinReset').addEventListener('click', () => {
+    if (confirm('Is the bin empty now? The item count and fill estimate go back to zero.')) binReset();
+  });
 
   const banner = document.createElement('div');
   banner.id = 'simBanner';

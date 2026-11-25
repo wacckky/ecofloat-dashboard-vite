@@ -18,9 +18,25 @@ export const BIN_STATUS_COLOR = {
   NEAR_FULL: 'var(--amber)', FULL: 'var(--red)',
 };
 
-// Battery voltage thresholds (LiFePO4 12V pack)
-export const BATTERY_WARN_V = 11;
-export const BATTERY_DANGER_V = 10;
+// Battery: INA226 measures VOLTAGE only (4S LiFePO4, 12.8 V nominal). The boat sends a level
+// (FULL / OK / LOW / CRITICAL) from a rest-voltage table; these are only a fallback.
+export const BATTERY_WARN_V = 13.1;
+export const BATTERY_DANGER_V = 12.8;
+export const BATTERY_LEVEL = {
+  FULL:     { label: 'Full',                tone: '' },
+  OK:       { label: 'Good',                tone: '' },
+  LOW:      { label: 'Low: charge soon',    tone: 'warn' },
+  CRITICAL: { label: 'Critical: charge now', tone: 'danger' },
+};
+export function batteryView(sys) {
+  // -> { text, tone, note } or null when there is no battery reading
+  if (!sys || sys.battery_voltage == null) return null;
+  const v = Number(sys.battery_voltage);
+  const lv = BATTERY_LEVEL[sys.battery_level];
+  const tone = lv ? lv.tone : (v < BATTERY_DANGER_V ? 'danger' : v < BATTERY_WARN_V ? 'warn' : '');
+  const load = sys.battery_under_load ? ' · under load (reads lower)' : '';
+  return { text: `${v.toFixed(2)} V`, tone, note: `${lv ? lv.label : 'voltage only'}${load}` };
+}
 
 export const WS_RECONNECT = { baseMs: 1000, maxMs: 30000 };
 export const API_TIMEOUT_MS = 20000; // Render free tier cold start can take ~30 s
