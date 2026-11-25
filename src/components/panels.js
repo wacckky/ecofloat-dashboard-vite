@@ -1,6 +1,6 @@
 import { subscribe } from '../store/store.js';
 import { $, set } from '../utils/dom.js';
-import { BIN_STATUS_COLOR, BATTERY_WARN_V, BATTERY_DANGER_V } from '../config/constants.js';
+import { BIN_STATUS_COLOR, batteryView } from '../config/constants.js';
 import { fmtCoord, pathLengthMeters } from '../utils/format.js';
 
 export const hasFix = (g) => g && Number(g.latitude) !== 0 && Number(g.longitude) !== 0;
@@ -23,13 +23,15 @@ function renderSystem({ system: d }) {
   const cpu = Number(d.cpu_percent || 0);
   const batEl = $('dBattery');
   if (batEl) {
-    if (d.battery_voltage == null) {          // no battery sensor yet: never show a fake 0.0 V alarm
+    const bv = batteryView(d);
+    if (!bv) {                                // sensor missing or switch off: never show a fake 0.0 V alarm
       batEl.textContent = 'not measured';
       batEl.className = 'val';
+      batEl.title = '';
     } else {
-      const bat = Number(d.battery_voltage);
-      batEl.textContent = `${bat.toFixed(1)} V`;
-      batEl.className = 'val' + (bat < BATTERY_DANGER_V ? ' danger' : bat < BATTERY_WARN_V ? ' warn' : '');
+      batEl.textContent = `${bv.text} · ${bv.note.split(' · ')[0]}`;
+      batEl.className = 'val' + (bv.tone ? ` ${bv.tone}` : '');
+      batEl.title = `Measured by INA226 (voltage, 30 s average). ${bv.note}`;
     }
   }
   set('dCpu', `${cpu.toFixed(0)}%`);
@@ -52,7 +54,7 @@ function renderBin({ bin: d }) {
   const color = BIN_STATUS_COLOR[status] || 'var(--teal)';
   set('dBinScore', d.volume_score || 0);
   set('dBinItems', `${d.items_collected || 0} items`);
-  set('dBinOcc', `${((d.occlusion_ratio || 0) * 100).toFixed(0)}%`);
+  set('dBinOcc', d.estimated ? 'not measured' : `${((d.occlusion_ratio || 0) * 100).toFixed(0)}%`);
   const bar = $('binBar');
   if (bar) { bar.style.width = `${Math.min(d.fill_percent || 0, 100)}%`; bar.style.background = color; }
   const label = $('dBinStatus');
